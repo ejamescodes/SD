@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+		<meta http-equiv="Pragma" content="no-cache" />
+		<meta http-equiv="Expires" content="0" />
+
+		<title>Raspberry Pi Temperature</title>
+
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+		<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+	</head>
+
+	<body onload="go()">
+
+		<center>
+			<div id="gauge" style="width: 250px; height: 250px"></div>
+			<div id="button">
+				<input onClick="button()" type="button" value="Blink an LED" style="width: 250px; height: 100px; font-size: 30px ">
+			</div>
+			<div id="curve_chart" style="width: 1200px; height: 1200px"></div>
+		</center>
+
+		<script type='text/javascript'>
+			//Load the charts libraries
+			google.charts.load('current', {packages:['gauge']});
+			google.charts.load('current', { packages: ['corechart'] });
+			//create empty array as a global
+			var chartData = [];
+					
+			function button(){
+				var xhr = new XMLHttpRequest();
+				xhr.open("GET","/button", true);
+				xhr.send();
+					
+				
+			}
+			
+			//This function is called when the page loads
+			function go(){
+				goTime = new Date();
+				console.log('It\'s Go Time! '+goTime);
+				getData();
+				setInterval(function() {
+					xTime = new Date();
+					console.clear();
+					console.log('Update Initiated: '+xTime);
+					getData();
+				}, 60000);
+			}
+			//grabs the data from the sqlData app.route and pushes it into an array
+			function getData(){
+				//Clear the array first
+				chartData = [];
+				$.getJSON('/sqlData', function(chartJSON) {
+					console.log(chartJSON);
+					for (i = 0; i < chartJSON.length; i++){
+						chartData.push([new Date(chartJSON[i].Date), chartJSON[i].Temperature]);
+					};
+					drawGauge();
+					drawChart();
+				});
+			}
+			//Draws the gauge
+			function drawGauge() {
+				var g2data = new google.visualization.arrayToDataTable([
+					[ {label: 'Temperature', id:'temp', type: 'number'} ]
+				]);
+				lastRow = chartData[chartData.length - 1];
+				temp1 = lastRow[lastRow.length - 1];
+				g2data.addRow([temp1]);              
+
+				var options2 = {
+				    redFrom: 88, redTo: 120,
+				    yellowFrom:78, yellowTo: 120,
+				    greenFrom:68, greenTo: 120,
+				    minorTicks: 5
+				};
+
+			    var gauge = new google.visualization.Gauge(document.getElementById('gauge'));
+			    gauge.draw(g2data, options2);
+			    gaugeTime = new Date();
+			    console.log('Gauge Drawn: '+gaugeTime);
+	        }
+	        //Draws the chart
+	        function drawChart() {
+						var gdata = new google.visualization.DataTable();
+						gdata.addColumn('date', 'Date');
+						gdata.addColumn('number', 'Temperature');
+						gdata.addRows(chartData);
+
+						var options = {
+	            			title: 'Temperture Log',
+	            			curveType: 'function',
+	            			legend: { position: 'bottom' }
+	        			};
+	        			var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+	        			chart.draw(gdata, options);
+	        			chartTime = new Date();
+			}
+
+		</script>
+
+
+	</body>
+
+</html>
