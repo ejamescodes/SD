@@ -26,40 +26,48 @@ RESOLUTION = {'Full': (0, 0, 0),
               '1/32': (1, 0, 1)}
 for i in range(3):
     	pi.write(MODE[i], RESOLUTION['Half'][i])
-freq = 0
 
 
 # Set duty cycle and frequency
 pi.set_PWM_dutycycle(STEP, 128)  # PWM 1/2 On 1/2 Off
-pi.set_PWM_frequency(STEP, freq)  # 500 pulses per second
-
-freq = 0
-accel = 50
-limit = 2500
-DIR = 0
+pi.set_PWM_frequency(STEP, 500)  # 500 pulses per second
 
 #cannot set upper limit to more than 2500
-def accel(dir, freq, accel, limit):
-	while freq != limit:
-                        pi.write(dir, pi.read(SWITCH))  # Set direction
+def accel(dir, freq, accel, delay):
+	while freq != 2500:
+                        pi.write(DIR, dir)  # Set direction
                         freq = freq + accel
                         pi.set_PWM_frequency(STEP, freq)
                         print(freq)
-                        sleep(.1)
+                        sleep(delay)
 
 #cannot set lower limit to less than 0
-def decel(dir, freq, decel, limit):
-        while freq != limit:
-                        pi.write(direction, pi.read(SWITCH))  # Set direction
+def decel(dir, freq, decel, delay):
+        while freq != 0:
+                        pi.write(DIR, dir)  # Set direction
                         freq = freq - decel
-                        pi.set_PWM_frequency(STEP, frequency)
-                        print(frequency)
-                        sleep(.1)
+                        pi.set_PWM_frequency(STEP, freq)
+                        print(freq)
+                        sleep(delay)
+
+def move(direction, time):
+	F = 0 #frequency
+	A = 50 #acceleration
+	D = 50 #deceleration
+	UL = 2500 #upper limit
+	LL = 0 #lower limit
+	DEL = time/(2*(UL)/A) #delay
+	print(DEL)
+	F = LL
+	accel(direction, F, A, DEL)
+	F = UL
+	decel(direction, F, D, DEL)
 
 try:
+	D = GPIO.LOW
+
 	while True:
-		accel(DIR, freq, 50, 2500)
-		decel(DIR, freq, 50, 0)
+		move(D, 1)
 
 except KeyboardInterrupt:
 	print ("\nCtrl-C pressed.  Stopping PIGPIO and exiting...")
