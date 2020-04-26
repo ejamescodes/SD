@@ -1,5 +1,5 @@
-from time import sleep
-import pigpio
+from time import sleep 
+import pigpio 
 import RPi.GPIO as GPIO
 
 DIR = 20     # Direction GPIO Pin
@@ -36,33 +36,35 @@ pi.set_PWM_frequency(STEP, freq)  # 500 pulses per second
 freq = 0
 accel = 50
 limit = 2500
-direction
+DIR = 0
 
-def move(direction, freq, accel):
-	 pi.write(DIR, pi.read(SWITCH))  # Set direction
-         freq = freq + accel
-         pi.set_PWM_frequency(STEP, freq)
-         print freq
-         sleep(.1)
+#cannot set upper limit to more than 2500
+def accel(dir, freq, accel, limit):
+	while freq != limit:
+                        pi.write(dir, pi.read(SWITCH))  # Set direction
+                        freq = freq + accel
+                        pi.set_PWM_frequency(STEP, freq)
+                        print(freq)
+                        sleep(.1)
 
-#try:
-#	while True:
-#		while freq != limit:
-#	       		pi.write(DIR, pi.read(SWITCH))  # Set direction
-#       		freq = freq + accel
-#			pi.set_PWM_frequency(STEP, freq)
-#			print freq
-#			sleep(.1)
-#		while freq != -limit:
-#               	pi.write(DIR, pi.read(SWITCH))  # Set direction
-#                	freq = freq - accel
-#                	pi.set_PWM_frequency(STEP, freq)
-#                	print freq
-#                	sleep(.1)
+#cannot set lower limit to less than 0
+def decel(dir, freq, decel, limit):
+        while freq != limit:
+                        pi.write(direction, pi.read(SWITCH))  # Set direction
+                        freq = freq - decel
+                        pi.set_PWM_frequency(STEP, frequency)
+                        print(frequency)
+                        sleep(.1)
 
-#except KeyboardInterrupt:
-#	print ("\nCtrl-C pressed.  Stopping PIGPIO and exiting...")
-#	GPIO.cleanup()
-#finally:
-#    	pi.set_PWM_dutycycle(STEP, 0)  # PWM off
-#    	pi.stop()
+try:
+	while True:
+		accel(DIR, freq, 50, 2500)
+		decel(DIR, freq, 50, 0)
+
+except KeyboardInterrupt:
+	print ("\nCtrl-C pressed.  Stopping PIGPIO and exiting...")
+	GPIO.cleanup()
+
+finally:
+	pi.set_PWM_dutycycle(STEP, 0)  # PWM off
+	pi.stop()
