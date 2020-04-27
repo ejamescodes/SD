@@ -66,8 +66,8 @@ def move(direction, time):
 try:
 	D = GPIO.LOW
 
-	while True:
-		move(D, 1)
+#	while True:
+	move(D, 1)
 
 except KeyboardInterrupt:
 	print ("\nCtrl-C pressed.  Stopping PIGPIO and exiting...")

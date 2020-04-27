@@ -7,6 +7,7 @@
 import smbus
 import time
 import os
+import sqlite2 as db
 
 # Get I2C bus
 bus = smbus.SMBus(1)
