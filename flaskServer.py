@@ -23,12 +23,12 @@ def chartData():
 	con = sql.connect('log/accelLog.db')
 	cur = con.cursor()
 	con.row_factory = sql.Row
-	cur.execute("SELECT Date, X_Axis, Y_Axis, Z_Axis FROM tempLog WHERE Temperature > 60")
+	cur.execute("SELECT * FROM accelLog")
 	dataset = cur.fetchall()
 	print (dataset)
 	chartData = []
 	for row in dataset:
-		chartData.append({"Date": row[0], "X-Axis": float(row[1]), "Y-Axis": float(row[2]), "Z-Axis": float(row[4]})
+		chartData.append({"Date": row[0], "X-Axis": float(row[1]), "Y-Axis": float(row[2]), "Z-Axis": float(row[3])})
 	return Response(json.dumps(chartData), mimetype='application/json')
 
 @app.route("/button")

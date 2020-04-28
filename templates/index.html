@@ -7,7 +7,7 @@
 		<meta http-equiv="Pragma" content="no-cache" />
 		<meta http-equiv="Expires" content="0" />
 
-		<title>Raspberry Pi Temperature</title>
+		<title>Statera</title>
 
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 		<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -57,7 +57,7 @@
 				$.getJSON('/sqlData', function(chartJSON) {
 					console.log(chartJSON);
 					for (i = 0; i < chartJSON.length; i++){
-						chartData.push([new Date(chartJSON[i].Date), chartJSON[i].Temperature]);
+						chartData.push([new Date(chartJSON[i].Date), chartJSON[i].X_Axis, chartJSON[i].Y_Axis, chartJSON[i].Z_Axis]);
 					};
 					drawGauge();
 					drawChart();
@@ -83,12 +83,14 @@
 			    gauge.draw(g2data, options2);
 			    gaugeTime = new Date();
 			    console.log('Gauge Drawn: '+gaugeTime);
-	        }
-	        //Draws the chart
-	        function drawChart() {
+		        }
+		        //Draws the chart
+	        	function drawChart() {
 						var gdata = new google.visualization.DataTable();
 						gdata.addColumn('date', 'Date');
-						gdata.addColumn('number', 'Temperature');
+						gdata.addColumn('number', 'X_Axis');
+						gdata.addColumn('number', 'Y_Axis');
+						gdata.addColumn('number', 'Z_Axis');
 						gdata.addRows(chartData);
 
 						var options = {
