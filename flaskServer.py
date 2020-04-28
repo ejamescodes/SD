@@ -20,6 +20,7 @@ def index():
 
 @app.route("/sqlData")
 def chartData():
+	os.system('clear')
 	con = sql.connect('log/accelLog.db')
 	cur = con.cursor()
 	con.row_factory = sql.Row
