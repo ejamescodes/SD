@@ -52,21 +52,29 @@
 			}
 			//grabs the data from the sqlData app.route and pushes it into an array
 			function getData(){
-				//Clear the array first
-				chartData = [];
-				$.getJSON('/sqlData', function(chartJSON) {
-					console.log(chartJSON);
-					for (i = 0; i < chartJSON.length; i++){
-						chartData.push([new Date(chartJSON[i].Date), chartJSON[i].X_Axis, chartJSON[i].Y_Axis, chartJSON[i].Z_Axis]);
-					};
-					drawGauge();
-					drawChart();
+				$.ajax({
+					success: function (response) {
+						//Clear the array first
+						chartData = [];
+						$.getJSON('/sqlData', function(chartJSON) {
+							//console.log(chartJSON);
+							for (i = chartJSON.length-180; i < chartJSON.length; i++){
+								chartData.push([new Date(chartJSON[i].Date), chartJSON[i].X_Axis, chartJSON[i].Y_Axis, chartJSON[i].Z_Axis]);
+								//console.log(chartJSON[i]);
+							};
+							chartData.push([null, null, null, null]);
+							//drawGauge();
+							drawChart();
+							
+						});
+						setTimeout(getData() ,500);
+					}
 				});
 			}
 			//Draws the gauge
 			function drawGauge() {
 				var g2data = new google.visualization.arrayToDataTable([
-					[ {label: 'Temperature', id:'temp', type: 'number'} ]
+					[ {label: 'X-Axis', id:'X-Axis', type: 'number'} ]
 				]);
 				lastRow = chartData[chartData.length - 1];
 				temp1 = lastRow[lastRow.length - 1];
@@ -86,15 +94,15 @@
 		        }
 		        //Draws the chart
 	        	function drawChart() {
-						var gdata = new google.visualization.DataTable();
-						gdata.addColumn('date', 'Date');
-						gdata.addColumn('number', 'X_Axis');
-						gdata.addColumn('number', 'Y_Axis');
-						gdata.addColumn('number', 'Z_Axis');
-						gdata.addRows(chartData);
+					var gdata = new google.visualization.DataTable();
+					gdata.addColumn('date', 'Date');
+					gdata.addColumn('number', 'X-Axis');
+					gdata.addColumn('number', 'Y-Axis');
+					gdata.addColumn('number', 'Z-Axis');
+					gdata.addRows(chartData);
 
-						var options = {
-	            			title: 'Temperture Log',
+					var options = {
+	            			title: 'Acceleration Log',
 	            			curveType: 'function',
 	            			legend: { position: 'bottom' }
 	        			};

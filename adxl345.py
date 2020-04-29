@@ -74,17 +74,36 @@ cur.execute("""CREATE TABLE IF NOT EXISTS accelLog(Date INTEGER, X_Axis INTTEGER
 
 try:
 	with open("log/accelLog.csv", "a") as log:
+		x = 1
+		y = 2
+		z = 3
 		while True:
+
+
 			# Output data to screen
 			print (time.strftime('%Y-%m-%d %H:%M:%S')+" X-Axis : %d | Y-Axis : %d | Z-Axis : %d" %(xAccl, yAccl, zAccl))
 
-			# Output data to screen
+			# Output data to csv
 			log.write(time.strftime('%Y-%m-%d %H:%M:%S')+" X-Axis : %d | Y-Axis : %d | Z-Axis : %d\n" %(xAccl, yAccl, zAccl))
 
 			# Logs data to database accelLog every millisecond
 			cur.execute('INSERT INTO accelLog (Date, X_Axis, Y_Axis, Z_Axis) VALUES(?,?,?,?)', (time.strftime('%Y-%m-%d %H:%M:%S'), xAccl, yAccl, zAccl))
 			con.commit()
-			time.sleep(0.001)
+
+			xAccl = xAccl+x
+			yAccl = yAccl+y
+			zAccl = zAccl+z
+
+			if xAccl >= 90: x = -1
+			elif xAccl <= -90: x = 1
+
+			if yAccl >= 90: y = -2
+			elif yAccl <= -90: y = 2
+
+			if zAccl >= 90: z = -3
+			elif zAccl <= -90: z = 3
+
+			time.sleep(.5)
 
 except KeyboardInterrupt:
 	#os.system('clear')

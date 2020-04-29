@@ -1,7 +1,8 @@
-from time import sleep 
-import pigpio 
+import time
+import pigpio
 import RPi.GPIO as GPIO
 import sqlite3 as mydb
+from time import sleep
 
 # Direction GPIO Pin
 DIR1 = 19
@@ -51,7 +52,7 @@ cur = con.cursor()
 cur.execute("""CREATE TABLE IF NOT EXISTS mtLog(Date INTEGER, Motor_1 INTTEGER, Motor_2 INTEGER, Motor_3 INTEGER)""")
 
 #cannot set upper limit to more than 2500
-def accel(D1, D2, D3, sig1, sig2, sig3, accel, delay):
+def accel(D1, D2, D3, sig1, sig2, sig3, freq, accel, delay):
 	with open("log/mtLog.csv", "a") as log:
 		while freq != 2500:
 			# Set direction
@@ -76,7 +77,7 @@ def accel(D1, D2, D3, sig1, sig2, sig3, accel, delay):
 			log.write(time.strftime('%Y-%m-%d %H:%M:%S')+" Motor 1 : %d HZ | Motor 2 : %d Hz| Motor 3 : %d Hz" %(f1, f2, f3))
 
 			# Logs data to database mtLog
-			cur.execute('INSERT INTO accelLog (Date, Motor_1, Motor_2, Motor_3) VALUES(?,?,?,?)', (time.strftime('%Y-%m-%d %H:%M:%S'), f1, f2, f3))
+			cur.execute('INSERT INTO mtLog (Date, Motor_1, Motor_2, Motor_3) VALUES(?,?,?,?)', (time.strftime('%Y-%m-%d %H:%M:%S'), f1, f2, f3))
 			con.commit()
 
 			sleep(delay)
@@ -111,7 +112,7 @@ def maintain(D1, D2, D3, sig1, sig2, sig3, freq, delay):
 		sleep(delay)
 
 #cannot set lower limit to less than 0
-def decel(D1, D2, D3, sig1, sig2, sig3, accel, delay):
+def decel(D1, D2, D3, sig1, sig2, sig3, freq, accel, delay):
 	with open("log/mtLog.csv", "a") as log:
 		while freq != 0:
 			# Set direction
@@ -238,7 +239,10 @@ def move(direction1, direction2, direction3, signal1, signal2, signal3):
 		state = 000
 
 try:
+	S = GPIO.HIGH
 	print ("test")
+	while True:
+		move(S,S,S,S,S,S)
 
 except KeyboardInterrupt:
 	print ("\nCtrl-C pressed.  Stopping PIGPIO and exiting...")
