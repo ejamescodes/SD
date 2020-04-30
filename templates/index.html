@@ -28,7 +28,8 @@
 			google.charts.load('current', {packages:['gauge']});
 			google.charts.load('current', { packages: ['corechart'] });
 			//create empty array as a global
-			var chartData = [];
+			var chartData_A = [];
+			var chartData_M = [];
 					
 			function button(){
 				var xhr = new XMLHttpRequest();
@@ -55,16 +56,16 @@
 				$.ajax({
 					success: function (response) {
 						//Clear the array first
-						chartData = [];
-						$.getJSON('/sqlData', function(chartJSON) {
+						chartData_A = [];
+						$.getJSON('/SQLData_A', function(chartJSON) {
 							//console.log(chartJSON);
 							for (i = chartJSON.length-180; i < chartJSON.length; i++){
-								chartData.push([new Date(chartJSON[i].Date), chartJSON[i].X_Axis, chartJSON[i].Y_Axis, chartJSON[i].Z_Axis]);
+								chartData_A.push([new Date(chartJSON[i].Date), chartJSON[i].X_Axis, chartJSON[i].Y_Axis, chartJSON[i].Z_Axis]);
 								//console.log(chartJSON[i]);
 							};
-							chartData.push([null, null, null, null]);
+							chartData_A.push([null, null, null, null]);
 							//drawGauge();
-							drawChart();
+							drawChart_A();
 							
 						});
 						setTimeout(getData() ,500);
@@ -92,14 +93,14 @@
 			    gaugeTime = new Date();
 			    console.log('Gauge Drawn: '+gaugeTime);
 		        }
-		        //Draws the chart
-	        	function drawChart() {
+		        //Draws the accel chart
+	        	function drawChart_A() {
 					var gdata = new google.visualization.DataTable();
 					gdata.addColumn('date', 'Date');
 					gdata.addColumn('number', 'X-Axis');
 					gdata.addColumn('number', 'Y-Axis');
 					gdata.addColumn('number', 'Z-Axis');
-					gdata.addRows(chartData);
+					gdata.addRows(chartData_A);
 
 					var options = {
 	            			title: 'Acceleration Log',
@@ -110,6 +111,24 @@
 	        			chart.draw(gdata, options);
 	        			chartTime = new Date();
 			}
+			//Draws the motor chart
+                        function drawMotorChart() {
+                                        var gdata = new google.visualization.DataTable();
+                                        gdata.addColumn('date', 'Date');
+                                        gdata.addColumn('number', 'Motor 1(Hz)');
+                                        gdata.addColumn('number', 'Motor 2(Hz)');
+                                        gdata.addColumn('number', 'Motor 3(Hz)');
+                                        gdata.addRows(chartData);
+
+                                        var options = {
+                                        title: 'Acceleration Log',
+                                        curveType: 'function',
+                                        legend: { position: 'bottom' }
+                                        };
+                                        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+                                        chart.draw(gdata, options);
+                                        chartTime = new Date();
+                        }
 
 		</script>
 

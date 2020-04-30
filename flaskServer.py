@@ -18,18 +18,32 @@ app = Flask(__name__)
 def index():
 	return render_template('/index.html')
 
-@app.route("/sqlData")
-def chartData():
+@app.route("/SQLData_A")
+def chartData_A():
 #	os.system('clear')
 	con = sql.connect('log/accelLog.db')
 	cur = con.cursor()
 	con.row_factory = sql.Row
-	cur.execute("SELECT Date, X_Axis, Y_Axis, Z_Axis FROM accelLog WHERE X_Axis < 270")
+	cur.execute("SELECT * FROM accelLog")
 	dataset = cur.fetchall()
 #	print (dataset)
 	chartData = []
 	for row in dataset:
 		chartData.append({"Date": row[0], "X_Axis": float(row[1]), "Y_Axis": float(row[2]), "Z_Axis": float(row[3])})
+	return Response(json.dumps(chartData), mimetype='application/json')
+
+@app.route("/mtData")
+def chartData_M():
+#       os.system('clear')
+	con = sql.connect('log/mtLog.db')
+	cur = con.cursor()
+	con.row_factory = sql.Row
+	cur.execute("SELECT * FROM mtLog")
+	dataset = cur.fetchall()
+#       print (dataset)
+	chartData = []
+	for row in dataset:
+		chartData.append({"Date": row[0], "Motor_1": float(row[1]), "Motor_2": float(row[2]), "Motor_3": float(row[3])})
 	return Response(json.dumps(chartData), mimetype='application/json')
 
 @app.route("/button")

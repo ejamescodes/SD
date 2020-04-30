@@ -51,6 +51,8 @@ con = mydb.connect('log/mtLog.db')
 cur = con.cursor()
 cur.execute("""CREATE TABLE IF NOT EXISTS mtLog(Date INTEGER, Motor_1 INTTEGER, Motor_2 INTEGER, Motor_3 INTEGER)""")
 
+# if D is high it is clockwise and if it is low its counter-clockwise
+
 #cannot set upper limit to more than 2500
 def accel(D1, D2, D3, sig1, sig2, sig3, freq, accel, delay):
 	with open("log/mtLog.csv", "a") as log:
@@ -173,81 +175,81 @@ def move(direction1, direction2, direction3, signal1, signal2, signal3):
 	state = (s1*100) + (s2*10) + s3
 
 	if state == 000:
-		F = LL
-		accel(direction1, direction2, direction3, s1, s2, s3, F, A, DEL)
+#		F = LL
+#		accel(direction1, direction2, direction3, s1, s2, s3, F, A, DEL)
 
 		F = UL
-		while state == 000:
-			maintain(direction1, direction2, direction3, s1, s2, s3, F, DEL)
+#		while state == 000:
+		maintain(direction1, direction2, direction3, s1, s2, s3, F, DEL)
 
 	elif state == 1:
-		F = LL
-		accel(direction1, direction2, direction3, s1, s2, s3, F, A, DEL)
+#		F = LL
+#		accel(direction1, direction2, direction3, s1, s2, s3, F, A, DEL)
 
 		F = UL
-		while state == 1:
-			maintain(direction1, direction2, direction3, s1, s2, s3, F, DEL)
+#		while state == 1:
+		maintain(direction1, direction2, direction3, s1, s2, s3, F, DEL)
 
 	elif state == 10:
-		F = LL
-		accel(direction1, direction2, direction3, s1, s2, s3, F, A, DEL)
+#		F = LL
+#		accel(direction1, direction2, direction3, s1, s2, s3, F, A, DEL)
 
 		F = UL
-		while state == 10:
-			maintain(direction1, direction2, direction3, s1, s2, s3, F, DEL)
+#		while state == 10:
+		maintain(direction1, direction2, direction3, s1, s2, s3, F, DEL)
 
 	elif state == 11:
-		F = LL
-		accel(direction1, direction2, direction3, s1, s2, s3, F, A, DEL)
+#		F = LL
+#		accel(direction1, direction2, direction3, s1, s2, s3, F, A, DEL)
 
 		F = UL
-		while state == 11:
-			maintain(direction1, direction2, direction3, s1, s2, s3, F, DEL)
+#		while state == 11:
+		maintain(direction1, direction2, direction3, s1, s2, s3, F, DEL)
 
 	elif state == 100:
-		F = LL
-		accel(direction1, direction2, direction3, s1, s2, s3, F, A, DEL)
+#		F = LL
+#		accel(direction1, direction2, direction3, s1, s2, s3, F, A, DEL)
 
 		F = UL
-		while state == 100:
-			maintain(direction1, direction2, direction3, s1, s2, s3, F, DEL)
+#		while state == 100:
+		maintain(direction1, direction2, direction3, s1, s2, s3, F, DEL)
 
 	elif state == 101:
-		F = LL
-		accel(direction1, direction2, direction3, s1, s2, s3, F, A, DEL)
+#		F = LL
+#		accel(direction1, direction2, direction3, s1, s2, s3, F, A, DEL)
 
 		F = UL
-		while state == 101:
-			maintain(direction1, direction2, direction3, s1, s2, s3, F, DEL)
+#		while state == 101:
+		maintain(direction1, direction2, direction3, s1, s2, s3, F, DEL)
 
 	elif state == 110:
-		F = LL
-		accel(direction1, direction2, direction3, s1, s2, s3, F, A, DEL)
+#		F = LL
+#		accel(direction1, direction2, direction3, s1, s2, s3, F, A, DEL)
 
 		F = UL
-		while state == 110:
-			maintain(direction1, direction2, direction3, s1, s2, s3, F, DEL)
+#		while state == 110:
+		maintain(direction1, direction2, direction3, s1, s2, s3, F, DEL)
 
 	elif state == 111:
-		F = LL
-		accel(direction1, direction2, direction3, s1, s2, s3, F, A, DEL)
+#		F = LL
+#		accel(direction1, direction2, direction3, s1, s2, s3, F, A, DEL)
 
 		F = UL
-		while state == 111:
-			maintain(direction1, direction2, direction3, s1, s2, s3, F, DEL)
+#		while state == 111:
+		maintain(direction1, direction2, direction3, s1, s2, s3, F, DEL)
 	else:
 		state = 000
 
-try:
-	S = GPIO.HIGH
+#try:
+#	S = GPIO.HIGH
 	print ("test")
-	while True:
-		move(S,S,S,S,S,S)
+#	while True:
+#		move(S,S,S,S,S,S)
 
-except KeyboardInterrupt:
-	print ("\nCtrl-C pressed.  Stopping PIGPIO and exiting...")
-	GPIO.cleanup()
+#except KeyboardInterrupt:
+#	print ("\nCtrl-C pressed.  Stopping PIGPIO and exiting...")
+#	GPIO.cleanup()
 
-finally:
-	pi.set_PWM_dutycycle(STEP1, 0)  # PWM off
-	pi.stop()
+#finally:
+#	pi.set_PWM_dutycycle(STEP1, 0)  # PWM off
+#	pi.stop()

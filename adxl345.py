@@ -7,7 +7,9 @@
 import smbus
 import time
 import os
+import RPi.GPIO as GPIO
 import sqlite3 as mydb
+import mt
 
 # Get I2C bus
 def init_bus():
@@ -62,7 +64,6 @@ def read_bus():
 	if zAccl > 511 :
 		zAccl -= 1024
 
-
 time.sleep(3)
 xAccl=0
 yAccl=0
@@ -77,6 +78,12 @@ try:
 		x = 1
 		y = 2
 		z = 3
+
+		I = GPIO.HIGH
+		O = GPIO.LOW
+		slope = (649519/1125000)
+
+		os.system('sudo pigpiod')
 		while True:
 
 
@@ -89,6 +96,17 @@ try:
 			# Logs data to database accelLog every millisecond
 			cur.execute('INSERT INTO accelLog (Date, X_Axis, Y_Axis, Z_Axis) VALUES(?,?,?,?)', (time.strftime('%Y-%m-%d %H:%M:%S'), xAccl, yAccl, zAccl))
 			con.commit()
+
+			if xAccl >= 0:
+				if zAccl >= xAccl*slope:
+					mt.move(O,I,O,I,I,O)
+				else:
+					mt.move(O,O,I,O,I,I)
+			elif  xAccl <= 0:
+				if zAccl >= xAccl*(-slope):
+					mt.move(O,I,O,I,I,O)
+				else:
+					mt.move(I,O,O,I,O,I)
 
 			xAccl = xAccl+x
 			yAccl = yAccl+y
