@@ -73,6 +73,7 @@ con = mydb.connect('log/accelLog.db')
 cur = con.cursor()
 cur.execute("""CREATE TABLE IF NOT EXISTS accelLog(Date INTEGER, X_Axis INTTEGER, Y_Axis INTEGER, Z_Axis INTEGER)""")
 
+
 try:
 	with open("log/accelLog.csv", "a") as log:
 		x = 1
@@ -96,17 +97,19 @@ try:
 			# Logs data to database accelLog every millisecond
 			cur.execute('INSERT INTO accelLog (Date, X_Axis, Y_Axis, Z_Axis) VALUES(?,?,?,?)', (time.strftime('%Y-%m-%d %H:%M:%S'), xAccl, yAccl, zAccl))
 			con.commit()
-
-			if xAccl >= 0:
-				if zAccl >= xAccl*slope:
-					mt.move(O,I,O,I,I,O)
-				else:
-					mt.move(O,O,I,O,I,I)
-			elif  xAccl <= 0:
-				if zAccl >= xAccl*(-slope):
-					mt.move(O,I,O,I,I,O)
-				else:
-					mt.move(I,O,O,I,O,I)
+			if xAccl >= 20 or xAccl <= -20 or zAccl >= 20 or zAccl <= -20:
+				if xAccl >= 0:
+					if zAccl >= xAccl*slope:
+						mt.move(O,I,O,I,I,O)
+					else:
+						mt.move(O,O,I,O,I,I)
+				elif  xAccl <= 0:
+					if zAccl >= xAccl*(-slope):
+						mt.move(O,I,O,I,I,O)
+					else:
+						mt.move(I,O,O,I,O,I)
+			else:
+				mt.move(O,O,O,O,O,O)
 
 			xAccl = xAccl+x
 			yAccl = yAccl+y

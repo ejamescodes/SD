@@ -32,7 +32,7 @@ def chartData_A():
 		chartData.append({"Date": row[0], "X_Axis": float(row[1]), "Y_Axis": float(row[2]), "Z_Axis": float(row[3])})
 	return Response(json.dumps(chartData), mimetype='application/json')
 
-@app.route("/mtData")
+@app.route("/SQLData_M")
 def chartData_M():
 #       os.system('clear')
 	con = sql.connect('log/mtLog.db')
